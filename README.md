@@ -1,2 +1,1 @@
-# abex
-Automatic BadUpdate Executer for Xbox 360
+# Automatic BadUpdate Executer for Xbox 360 (ABEX)
