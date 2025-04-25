@@ -6,3 +6,16 @@
 The code works, but I plan to make code or logic improvements in the future.
 On my youtube channel I will publish some tests: https://youtube.com/@ivnlsc</p>
 </div>
+
+#Components used:
+
+-Esp32-WROOM-32 -> Microcontroller
+-2x 9018 NPN transistor -> Short button pins
+-2x 13001B NPN transistor -> Power controller and power Xbox
+-2x 100kΩ transistor -> For RCA audio signal
+-1uf capacitor -> RCA audio signal
+-4x 1kΩ resistor -> Base pin of transistors
+-Passive buzzer -> Sound alert
+-Usb Xbox360 controller -> I just used the board to make it more compact,can also be adapted for wireless control.
+
+
