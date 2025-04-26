@@ -1,9 +1,9 @@
-// Version 1.0 of ABEX (Automatic BadUpdate Executor for XBOX360) by IvnLS
+//Version 1.1 of ABEX (Automatic BadUpdate Executor for XBOX360) by IvnLS
 
-#define BUTTON_RB 27 // Directional relay
-#define BUTTON_A 26 // Button A relay
-#define POWER_CONT 25 // Controller power relay
-#define POWER_XBOX 32 // Xbox power relay
+#define BUTTON_RB 27 // Button RB
+#define BUTTON_A 26 // Button A
+#define POWER_CONT 25 // Controller power
+#define POWER_XBOX 32 // Xbox power
 #define AUDIO_RCA 35 // RCA audio capture
 #define BUZZER 33 // Buzzer to indicate stages
 #define LED 2 // led
@@ -50,21 +50,20 @@ void loop() {
   }
   
   while(!sucess) {
+    freezed = false;
     delay(22000);
 
     if (verifyCont(LED_CONT) < 1 || verifyCont(LED_CONT) > 2.7) {
       Serial.println("The console did not start!");
       break;  
     }
-
-    freezed = false;
     
     //2xRB 3xA
     Serial.println("Entering BadUpdate...");
 
-    beep(BUZZER, 250);
+    beep(250);
     
-    //2x RB para chegar até os games
+    //2x RB
     digitalWrite(BUTTON_RB, HIGH);
     delay(500);
     digitalWrite(BUTTON_RB, LOW);
@@ -89,7 +88,9 @@ void loop() {
     delay(250);
     digitalWrite(BUTTON_A, LOW);
 
-    beep(BUZZER, 250);
+    beep(250);
+
+    digitalWrite(POWER_CONT, LOW);
     
     //Verification loop
     while(!freezed) {
@@ -108,22 +109,17 @@ void loop() {
       Serial.print("Variation after 10s: ");
       Serial.println(variacao);
 
-    
       if (variacao > 200) {
         freezed = false;
-
       } else {
-
         delay(4000);
 
-        // Turn the controller off and on again
-        digitalWrite(POWER_CONT, LOW);
-        delay(4000);
+        // Turn the controller on
         digitalWrite(POWER_CONT, HIGH);
         delay(8000);
 
         //If the controller was connected
-        if (verifyCont(LED_CONT) < 2.7) {
+        if (verifyCont(LED_CONT) > 1.0 && verifyCont(LED_CONT) < 2.7) {
 
           //turn off controller
           digitalWrite(POWER_CONT, LOW);
@@ -131,24 +127,16 @@ void loop() {
           Serial.println("Success! Enjoy your ABEX exploit");
 
           //Successful Buzzer
-          tone(BUZZER, 1000);
-          delay(250);
-          tone(BUZZER, 2000);
-          delay(250);
-          tone(BUZZER, 3000);
-          delay(800);
+          for(int i=1; i <= 4; i++) {
+            tone(BUZZER, i * 1000);
+            delay(250);
+          }
           noTone(BUZZER);
-
+          
           delay(2000);
           sucess = true;
 
-          while (true) {
-            digitalWrite(LED, HIGH);
-            delay(200);
-            digitalWrite(LED, LOW);
-            delay(200);
-          }
-          break;
+          sucessLoop();
         } else {
           Serial.println("It appears the ABEX exploit failed, restarting the process...");
 
@@ -160,21 +148,18 @@ void loop() {
           digitalWrite(POWER_CONT, LOW);
 
           //Command to shut down
-          digitalWrite(POWER_XBOX, HIGH);
-          delay(250);
-          digitalWrite(POWER_XBOX, LOW);
+          xboxPower();
+
+          //turn off controller
+          digitalWrite(POWER_CONT, HIGH);
 
           delay(10000);
           
           //turn on
-          digitalWrite(POWER_XBOX, HIGH);
-          delay(250);
-          digitalWrite(POWER_XBOX, LOW);
+          xboxPower();
 
           freezed = true;
           break;
-        }
-          
         }
     
         // reboot
@@ -182,10 +167,10 @@ void loop() {
         valorMax = 0;
         ultimaVerificacao = millis();
       }
-    
+      
       delay(10); //Sampling every 10ms
     }
-    
+  }  
 }
 
 //check if the controller has been connected by voltage
@@ -195,8 +180,23 @@ float verifyCont(int pino) {
   return tensao;
 }
 
-void beep(int buzzer, int milis) {
-  tone(buzzer, 1000);
+void beep(int milis) {
+  tone(BUZZER, 1000);
   delay(milis);
-  noTone(buzzer);
+  noTone(BUZZER);
+}
+
+void xboxPower() {
+  digitalWrite(POWER_XBOX, HIGH);
+  delay(250);
+  digitalWrite(POWER_XBOX, LOW);
+}
+
+void sucessLoop() {
+  while (true) {
+    digitalWrite(LED, HIGH);
+    delay(200);
+    digitalWrite(LED, LOW);
+    delay(200);
+  }
 }
