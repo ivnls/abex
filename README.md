@@ -18,5 +18,6 @@ On my youtube channel I will publish some tests: https://youtube.com/@ivnlsc</p>
 - **Passive buzzer** → Sound alert  
 - **USB Xbox 360 controller** → I just used the board to make it more compact, can also be adapted for wireless control.
 
-
+## Working on:
+Using infrared signals from the Xbox Media Remote to send commands instead of the controller
 
